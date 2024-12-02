@@ -1,22 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
 
 function App() {
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState("");
+
+  const handleAddTask = () => {
+    if (newTask.trim()) {
+      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
+      setNewTask("");
+    }
+  };
+
+  const handleCompleteTask = (id) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h1>Task Management</h1>
+        <div className="task-input">
+          <input
+            type="text"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            placeholder="Enter a new task"
+          />
+          <button onClick={handleAddTask}>Add Task</button>
+        </div>
+        <ul className="task-list">
+          {tasks.map((task) => (
+            <li key={task.id} className={task.completed ? "completed" : ""}>
+              <span onClick={() => handleCompleteTask(task.id)}>{task.text}</span>
+            </li>
+          ))}
+        </ul>
       </header>
     </div>
   );
